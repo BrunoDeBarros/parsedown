@@ -1315,6 +1315,22 @@ class Parsedown
             return;
         }
 
+        if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\.(png|gif|jpg)\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
+        {
+            $Inline = array(
+                'extent' => strlen($matches[0][0]),
+                'position' => $matches[0][1],
+                'element' => array(
+                    'name' => 'img',
+                    'attributes' => array(
+                        'src' => $matches[0][0],
+                    ),
+                ),
+            );
+
+            return $Inline;
+        }
+
         if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
         {
             $Inline = array(
