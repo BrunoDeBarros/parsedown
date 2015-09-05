@@ -17,7 +17,7 @@ class Parsedown
 {
     # ~
 
-    const version = '1.5.3';
+    const version = '1.5.4';
 
     # ~
 
@@ -384,16 +384,16 @@ class Parsedown
 
     protected function blockFencedCode($Line)
     {
-        if (preg_match('/^(['.$Line['text'][0].']{3,})[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches))
+        if (preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches))
         {
             $Element = array(
                 'name' => 'code',
                 'text' => '',
             );
 
-            if (isset($matches[2]))
+            if (isset($matches[1]))
             {
-                $class = 'language-'.$matches[2];
+                $class = 'language-'.$matches[1];
 
                 $Element['attributes'] = array(
                     'class' => $class,
@@ -661,7 +661,9 @@ class Parsedown
 
         if (preg_match('/^<(\w*)(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*(\/)?>/', $Line['text'], $matches))
         {
-            if (in_array($matches[1], $this->textLevelElements))
+            $element = strtolower($matches[1]);
+
+            if (in_array($element, $this->textLevelElements))
             {
                 return;
             }
@@ -975,7 +977,6 @@ class Parsedown
     {
         $markup = '';
 
-        # $text contains the unexamined text
         # $excerpt is based on the first occurrence of a marker
 
         while ($excerpt = strpbrk($text, $this->inlineMarkerList))
@@ -1486,7 +1487,7 @@ class Parsedown
             return self::$instances[$name];
         }
 
-        $instance = new self();
+        $instance = new static();
 
         self::$instances[$name] = $instance;
 
